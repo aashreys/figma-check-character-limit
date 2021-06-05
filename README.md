@@ -5,7 +5,7 @@ for localization.
 
 Here's how you use it:
 1. Add `[CharCount:XX]` to the name of your text layers. XX is the maximum character count for the layer. For example: `Description Text [CharCount:2000]`.
-2. Run the plugin to check character counts on your text layers (see note).
+2. Edit content and run the plugin to check character counts on your text layers (see note).
 3. Text layers that exceed their character count will be highlighted with a red overlay. The overlays can be found at the top of your layer list.
 4. Select an overlay from the layer list and press Shift + 2 to locate it.
 5. Edit the associated text layer and fix its content.
