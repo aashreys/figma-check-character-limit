@@ -1,25 +1,17 @@
 /*
-Character Count Checker is a simple plugin that let's you define a maximum character count for a text layer 
+Check Character Count is a simple plugin that let's you define a maximum character count for a text layer 
 and check if the text layer exceeds that character count. This is especially handy for enforcing character 
-limits for localization purposes.
+limits for localization.
 
-Here's how you use it:
-1. Add [CC:XX] to your text layer names where XX is the allowed character count. For example: "Description [CC:2000]".
-If the tag is not added, then the character count is unlimimted.
-2. Update your text layers with content as usual.
-3. When you want to check your layers, select them and run the plugin. If nothing is selected, the entire page will 
-be checked.
-4. Text layers which exceed their character counts will be highlighted with a red overlay layer. These overlays will 
-be at the top of your layers list. 
-5. Select an overlay in the layers list, then press Shift + 2 to pan to it.
+See https://github.com/aashreys/figma-check-character-count for usage and license.
 */
 
 const TEXT_NODE = "TEXT";
 const NOTIFICATION_TIME_SHORT = 2000;
 const NOTIFICATION_TIME_LONG = 4000;
 const IS_DEBUG_LOG_ENABLED = true;
-const CHAR_COUNT_REGEX = /CC:(\d+)/; // https://regex101.com/r/6UymGW/1
-const FLAG_LAYER_NAME = "FLAGGED: Character count exceeded by ";
+const CHAR_COUNT_REGEX = /CharCount:(\d+)/i; // https://regex101.com/r/o9z8wp/1
+const FLAG_LAYER_NAME = "\u26A0 Character count exceeded by ";
 const FLAG_ID_KEY = "FLAG_ID";
 
 var numFlaggedNodes = 0;
