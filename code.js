@@ -1,6 +1,6 @@
 const TEXT_NODE = "TEXT";
 const NOTIFICATION_TIME_SHORT = 2000;
-const NOTIFICATION_TIME_LONG = 3000;
+const NOTIFICATION_TIME_LONG = 4000;
 const IS_DEBUG_LOG_ENABLED = true;
 const CHAR_LIMIT_REGEX = /CharLimit:(\d+)/i; // https://regex101.com/r/o9z8wp/1
 const FLAG_ID_KEY = "FLAG_ID";
