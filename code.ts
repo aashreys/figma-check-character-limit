@@ -1,17 +1,8 @@
-/*
-Check Character Count is a simple plugin that let's you define a maximum character count for a text layer 
-and check if the text layer exceeds that character count. This is especially handy for enforcing character 
-limits for localization.
-
-See https://github.com/aashreys/figma-check-character-count for usage and license.
-*/
-
 const TEXT_NODE = "TEXT";
 const NOTIFICATION_TIME_SHORT = 2000;
-const NOTIFICATION_TIME_LONG = 4000;
+const NOTIFICATION_TIME_LONG = 3000;
 const IS_DEBUG_LOG_ENABLED = true;
-const CHAR_COUNT_REGEX = /CharCount:(\d+)/i; // https://regex101.com/r/o9z8wp/1
-const FLAG_LAYER_NAME = "\u26A0 Character count exceeded by ";
+const CHAR_LIMIT_REGEX = /CharLimit:(\d+)/i; // https://regex101.com/r/o9z8wp/1
 const FLAG_ID_KEY = "FLAG_ID";
 
 var numFlaggedNodes = 0;
@@ -32,7 +23,7 @@ try {
 
 function processRecursively(rootNode) {
     if (isNodeText(rootNode)) {
-        checkCharacterCount(rootNode);    
+        checkCharacterLimit(rootNode);    
     } 
 
     if ("children" in rootNode) {
@@ -42,11 +33,11 @@ function processRecursively(rootNode) {
     }
 }
 
-function checkCharacterCount(textNode: TextNode) {
-    if (CHAR_COUNT_REGEX.test(textNode.name)) {
-        const maxCharCount = parseInt(textNode.name.match(CHAR_COUNT_REGEX)[1]);
-        if (textNode.characters.length > maxCharCount) {
-            flagNode(textNode, textNode.characters.length - maxCharCount);
+function checkCharacterLimit(textNode: TextNode) {
+    if (CHAR_LIMIT_REGEX.test(textNode.name)) {
+        const numCharLimit = parseInt(textNode.name.match(CHAR_LIMIT_REGEX)[1]);
+        if (textNode.characters.length > numCharLimit) {
+            flagNode(textNode, textNode.characters.length - numCharLimit);
         } else {
             unflagNode(textNode);
         }
@@ -60,11 +51,9 @@ function flagNode(textNode: TextNode, numExtraChars) {
 
 function updateFlagNodeUI(textNode: TextNode, numExtraChars) {
     var flag:RectangleNode = getFlagNode(textNode) as RectangleNode;
-    if (flag == null) {
-        flag = figma.createRectangle();
-        figma.currentPage.appendChild(flag);
-    }
-    flag.name = FLAG_LAYER_NAME + numExtraChars;
+    if (flag == null) flag = figma.createRectangle();
+    figma.currentPage.appendChild(flag);
+    flag.name = getFlagUIName(numExtraChars);
     flag.x = textNode.absoluteTransform[0][2];
     flag.y = textNode.absoluteTransform[1][2];
     flag.resize(textNode.width, textNode.height);
@@ -93,7 +82,7 @@ function setNodeFlag(textNode: TextNode, flagId) {
 }
 
 function getFlagUIName(numExtraChars) {
-    return FLAG_LAYER_NAME + numExtraChars;
+    return `\u26A0 Character limit exceeded by ${numExtraChars}`;
 }
 
 function isNodeText(node) {
@@ -102,10 +91,10 @@ function isNodeText(node) {
 
 function notifyStatus(numFlaggedNodes) {
     if (numFlaggedNodes > 0) {
-        const msg = numFlaggedNodes + (numFlaggedNodes > 1 ? " layers" : " layers") + " exceed character count. Scroll to the top of your layer list for location.";
+        const msg = numFlaggedNodes + (numFlaggedNodes > 1 ? " layers exceed character limits" : " layer exceeds character limit") + ". Flagged at the top of the layer list.";
         notifyUI(msg, NOTIFICATION_TIME_LONG);
     } else {
-        notifyUI("Great! No layers exceed their character count.", NOTIFICATION_TIME_SHORT);
+        notifyUI("All layers within character limits!", NOTIFICATION_TIME_SHORT);
     }
 }
 
